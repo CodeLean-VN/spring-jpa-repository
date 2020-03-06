@@ -10,10 +10,14 @@ import java.util.Set;
 @Table(name = "provinces")
 public class Province {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+
+    @Column(name = "name", length = 6000, columnDefinition = "NVARCHAR(6000) CHARACTER SET utf-8 COLLATE utf-8")
     private String name;
+
+    //private String name;
 
     @OneToMany(mappedBy = "province")
     private Set<Customer> customers;

@@ -46,47 +46,39 @@ public class ApplicationConfig implements WebMvcConfigurer {
     private ApplicationContext applicationContext;
 
     @Bean
-    public CustomerService customerService(){
+    public CustomerService customerService() {
         return new CustomerServiecImpl();
     }
 
     @Bean
-    public ProvinceService provinceService(){
+    public ProvinceService provinceService() {
         return new ProvinceServiceImpl();
     }
 
-     /*
-     private ApplicationContext applicationContext;
-
-     @Override
-     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-     }
-     * */
-
-
-
     //Cấu hình thymeleaf
     @Bean
-    public SpringResourceTemplateResolver templateResolver(){
+    public SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
         templateResolver.setApplicationContext(applicationContext);
         templateResolver.setPrefix("/WEB-INF/views/");
         templateResolver.setSuffix(".html");
+        templateResolver.setCharacterEncoding("UTF-8");
         templateResolver.setTemplateMode(TemplateMode.HTML);
         return templateResolver;
     }
 
     @Bean
-    public TemplateEngine templateEngine(){
+    public TemplateEngine templateEngine() {
         TemplateEngine templateEngine = new SpringTemplateEngine();
         templateEngine.setTemplateResolver(templateResolver());
         return templateEngine;
     }
 
     @Bean
-    public ThymeleafViewResolver viewResolver(){
+    public ThymeleafViewResolver viewResolver() {
         ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
+        viewResolver.setCharacterEncoding("UTF-8");
+        viewResolver.setContentType("text/html; charset=UTF-8");
         viewResolver.setTemplateEngine((ISpringTemplateEngine) templateEngine());
         return viewResolver;
     }
@@ -100,17 +92,18 @@ public class ApplicationConfig implements WebMvcConfigurer {
 
 
     @Bean
-    public DataSource dataSource(){
+    public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/spring-jpa-sample");
-        dataSource.setUsername( "root" );
-        dataSource.setPassword( "123456" );
+        dataSource.setUrl("jdbc:mysql://localhost:3306/spring-jpa-sample?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8");
+        dataSource.setUsername("root");
+        dataSource.setPassword("123456");
+
         return dataSource;
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager(EntityManagerFactory emf){
+    public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(emf);
         return transactionManager;
@@ -120,6 +113,10 @@ public class ApplicationConfig implements WebMvcConfigurer {
         Properties properties = new Properties();
         properties.setProperty("hibernate.hbm2ddl.auto", "update");
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+        properties.setProperty("spring.jpa.properties.hibernate.connection.characterEncoding", "utf-8");
+        properties.setProperty("spring.jpa.properties.hibernate.connection.CharSet", "utf-8");
+        properties.setProperty("spring.jpa.properties.hibernate.connection.useUnicode", "utf-8");
+
         return properties;
     }
 
@@ -134,4 +131,5 @@ public class ApplicationConfig implements WebMvcConfigurer {
         emBean.setJpaProperties(additionalProperties());
         return emBean;
     }
+
 }
